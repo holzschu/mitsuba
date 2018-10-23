@@ -53,7 +53,10 @@ public:
         EBidirectional,
 
         /// Unidirectional path tracing (via the 'volpath' plugin)
-        EUnidirectional
+        EUnidirectional,
+
+		// Manifold exploration sampling
+		EManifold
     };
 
     /**
@@ -144,6 +147,14 @@ public:
      */
     void samplePaths(const Point2i &offset, PathCallback &callback);
 
+	/**
+	 * \brief Auxiliary functions called by samplePaths(). Required for manifoldSampling=true (exploration of low dimension manifolds)
+	 * edgeValue() computes the value of the edge vs->vt (can be called again if we introduce a vertex between vs and vt)
+	 * addContributionFromPath() computes the contribution from the computed path (there can be more than one)
+	 */
+	Spectrum edgeValue(PathVertex *emitterVertex, PathVertex *emitterVertexPred, PathVertex *cameraVertex, PathVertex *cameraVertexPred, Spectrum emitterWeight, Spectrum cameraWeight, bool testForDegenerateVertices = false);
+	void addContributionFromPath(PathCallback &callback, int s, int t, Spectrum& value, bool sampleDirect, EMeasure vsMeasure, EMeasure vtMeasure, bool collapsePath = true);
+	
     /**
      * \brief Generates a sequence of seeds that are suitable for
      * starting a MLT Markov Chain

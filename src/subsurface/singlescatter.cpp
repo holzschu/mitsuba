@@ -1263,8 +1263,7 @@ public:
             limits.y = pmax.x;
         }
         // Sampling.
-        int numSamples =
-            1; // for small triangle models, 1 sample per triangle is enough
+        int numSamples = 1; // for small triangle models, 1 sample per triangle is enough
         Spectrum sum(0.0f);
         if (extremitiesInside && (numInside < 2)) {
             // The ray enters (or leaves) through the triangle, we didn't see
@@ -1272,14 +1271,15 @@ public:
             // Expensive, but better than nothing
             Float startX = 0, endX = 0, deltaX = 0;
             if (limits.x == 0.0f) {
-                deltaX = 0.1f * m_radius;
+                // deltaX = 0.1f * m_radius;
                 startX = limits.x;
                 endX = limits.y;
             } else {
-                deltaX = -0.1f * m_radius;
+                // deltaX = -0.1f * m_radius;
                 startX = limits.y;
                 endX = limits.x;
             }
+			deltaX = (endX - startX) / numSamples;
             Vector testP = paramP; // entry point
             testP.x = startX + 0.5f * deltaX;
             for (Float x = startX + 0.5f * deltaX;
@@ -1292,10 +1292,8 @@ public:
                             tP[0], tN, Ng, a11, a12, a22, inputSpectrum, scene,
                             time);
                         sum += fabs(deltaX) * cfp;
-                    } else
-                        break;
-                } else
-                    break;
+                    } // else break;
+                } // else break;
                 testP.x = x + deltaX; // advance along ray by x
             }
         } else {

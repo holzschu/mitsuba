@@ -36,6 +36,7 @@ MTS_NAMESPACE_BEGIN
 struct MLTConfiguration {
     int maxDepth;
     bool separateDirect;
+	bool manifoldSampling;
     bool bidirectionalMutation;
     bool causticPerturbation;
     bool lensPerturbation;

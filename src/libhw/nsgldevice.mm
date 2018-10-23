@@ -409,9 +409,13 @@ void NSGLDevice::init(Device *other) {
     m_mutex = new Mutex();
 
     /* Create the device window */
-    m_window = [[NSWindow alloc] initWithContentRect: contentRect
+    dispatch_async(dispatch_get_main_queue(), ^{ m_window = [[NSWindow alloc] initWithContentRect: contentRect
         styleMask: NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask
-        backing: NSBackingStoreBuffered defer: NO];
+        backing: NSBackingStoreBuffered defer: NO]; });
+
+    /* m_window = [[NSWindow alloc] initWithContentRect: contentRect
+        styleMask: NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask
+        backing: NSBackingStoreBuffered defer: NO]; */
     if (m_window == nil)
         Log(EError, "Could not create window");
 

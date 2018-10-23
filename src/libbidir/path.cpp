@@ -553,8 +553,7 @@ void Path::collapseTo(PathEdge &target) const {
 
     for (size_t i=0; i<m_vertices.size(); ++i) {
         const PathVertex *vertex = m_vertices[i];
-        BDAssert(vertex->isSurfaceInteraction() &&
-            vertex->componentType == BSDF::ENull);
+        BDAssert(vertex->isSurfaceInteraction() && vertex->componentType == BSDF::ENull);
         target.weight[ERadiance] *= vertex->weight[ERadiance];
         target.weight[EImportance] *= vertex->weight[EImportance];
         target.pdf[ERadiance] *= vertex->pdf[ERadiance];

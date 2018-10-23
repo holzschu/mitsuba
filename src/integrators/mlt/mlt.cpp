@@ -167,6 +167,8 @@ public:
            MLT will handle direct illumination as well */
         m_config.directSamples = props.getInteger("directSamples", 16);
         m_config.separateDirect = m_config.directSamples >= 0;
+        
+		m_config.manifoldSampling = props.getBoolean("manifoldSampling", true);
 
         /* Specifies the number of parallel work units required for
            multithreaded and network rendering. When set to <tt>-1</tt>, the
@@ -294,7 +296,7 @@ public:
         }
 
         ref<ReplayableSampler> rplSampler = new ReplayableSampler();
-        ref<PathSampler> pathSampler = new PathSampler(PathSampler::EBidirectional, scene,
+ 		ref<PathSampler> pathSampler = new PathSampler(m_config.manifoldSampling ? PathSampler::EManifold : PathSampler::EBidirectional, scene,
             rplSampler, rplSampler, rplSampler, m_config.maxDepth, 10,
             m_config.separateDirect, true);
 
