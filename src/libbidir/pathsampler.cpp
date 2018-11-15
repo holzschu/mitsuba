@@ -401,6 +401,19 @@ void PathSampler::addContributionFromPath(PathCallback &callback, int s, int t, 
 		/* Compute the multiple importance sampling weight */
 		value *= Path::miWeight(m_scene, m_emitterSubpath, &connectionEdge,
 				m_sensorSubpath, s, t, m_sampleDirect, m_lightImage);
+	} else {
+		// m_connectionSubpath can not be collapsed. 
+		if (sampleDirect) {
+			/* A direct sampling strategy was used, which generated
+			   two new vertices at one of the path ends. Temporarily
+			   modify the path to reflect this change */
+			if (t == 1)
+				m_sensorSubpath.swapEndpoints(vtPred, vtEdge, vt);
+			else
+				m_emitterSubpath.swapEndpoints(vsPred, vsEdge, vs);
+		}
+		value *= Path::miWeight(m_scene, m_emitterSubpath, m_connectionSubpath,
+				m_sensorSubpath, s, t, m_sampleDirect, m_lightImage);
 	}
 
 	if (!value.isZero()) {
@@ -594,8 +607,7 @@ void PathSampler::samplePaths(const Point2i &offset, PathCallback &callback) {
 						// value has also changed since we have new vertices on the path:
 						valueRefraction =  emitterWeight * cameraWeight * 
 							vs->eval(m_scene, vsPred, m_connectionSubpath.vertex(0), EImportance, vsMeasure) *
-							vt->eval(m_scene, vtPred, m_connectionSubpath.vertex(k - 1), ERadiance, vtMeasure)
-							* m_connectionSubpath.vertex(0)->eval(m_scene, vs, vt, EImportance, EDiscrete); 
+							vt->eval(m_scene, vtPred, m_connectionSubpath.vertex(k - 1), ERadiance, vtMeasure); 
 						// This only accounts for the value at the extremities of the connection sub-path
 						// The contribution from the path itself is computed in addContributionFromPath
 						// TODO: did I check that both (all) paths elements are visible? 
